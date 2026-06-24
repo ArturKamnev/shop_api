@@ -1,38 +1,35 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import Product, Category, Review
 
-#category
-
-class CategoriesListSerializer(ModelSerializer):
+class CategoriesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = 'name'.split()
+        fields = 'id name'.split()
 
-class CategoryDetailSerializer(ModelSerializer):
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
-#products
-
-class ProductsListSerializer(ModelSerializer):
+class ProductsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = 'title price'.split()
+        fields = 'id title price'.split()
 
-class ProductDetailSerializer(ModelSerializer):
+
+class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
 
-#reviews
-
-class ReviewsListSerializer(ModelSerializer):
+class ReviewsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = 'text'[0:50].split()
+        fields = 'id text product'.split()
 
-class ReviewDetailSerializer(ModelSerializer):
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
