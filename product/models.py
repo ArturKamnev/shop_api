@@ -36,7 +36,7 @@ class Review(models.Model):
     text = models.TextField(max_length=300)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     # vscode почему то ругаеться на строку stars поэтому я добавил игноры
-    stars = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True) # pyright: ignore[reportCallIssue, reportArgumentType]
+    stars = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1) # pyright: ignore[reportCallIssue, reportArgumentType]
 
     def __str__(self) -> str:
         return self.product.title
