@@ -53,7 +53,7 @@ def product_detail_api_view(request, id):
         product.price = request.data.get('price')
         product.category_id = request.data.get('category_id') # type: ignore
         product.save()
-        return Response(status=status.HTTP_200_OK, data=ProductDetailSerializer(product, many=False).data)
+        return Response(status=status.HTTP_201_CREATED, data=ProductDetailSerializer(product, many=False).data)
     elif request.method == "DELETE":
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
