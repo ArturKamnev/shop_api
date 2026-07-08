@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 import random
 # Create your views here.
 
+@api_view(http_method_names=['POST'])
 def confirm_api_view(request):
     serializer = AuthCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
