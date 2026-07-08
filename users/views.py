@@ -10,14 +10,22 @@ from django.contrib.auth import authenticate
 import random
 # Create your views here.
 
-@api_view(http_method_names=['POST'])
-def authorization_api_view(request):
+def confirm_api_view(request):
     serializer = AuthCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    user = request.data.get('user')
+    auth_code = serializer.validated_data.get('auth_code') # type: ignore
+    user = auth_code.user # type: ignore
+
     user.is_active = True
-    return Response(status=status.HTTP_200_OK, data={"message": "Доброе пожаловать"})
+    user.save(update_fields=['is_active'])
+
+    auth_code.delete() # type: ignore
+
+    return Response(
+        {"message": "Аккаунт успешно подтвержден"},
+        status=status.HTTP_200_OK
+    )
 
 @api_view(http_method_names=['POST'])
 def authentication_api_view(request):
@@ -30,9 +38,15 @@ def authentication_api_view(request):
 
     if user is not None:
         if user.is_active:
-            return Response(status=status.HTTP_202_ACCEPTED, data={"message": "Добро пожаловать"})
+            try:
+                token = Token.objects.get(user=user)
+            except:
+                token = Token.objects.create(user=user)
+            return Response(status=status.HTTP_202_ACCEPTED, data={"message": "Добро пожаловать", "token": token.key})
         else:
-            return Response(status=status.HTTP_200_OK, data={"message": "Добро пожаловать, но чтобы активировать аккаунт пожалуйста активируйте ваш код"})
+            return Response(status=status.HTTP_403_FORBIDDEN, data={"message": "Аккаунт не подтвержден"})
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'message': "Неверный логин или пароль"})
 
 @api_view(http_method_names=['POST'])
 def registration_api_view(request):

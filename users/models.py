@@ -5,5 +5,5 @@ class AuthCode(models.Model):
     code = models.IntegerField()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def __str__(self) -> int:
-        return self.code
+    def __str__(self) -> str:
+        return str(self.code)

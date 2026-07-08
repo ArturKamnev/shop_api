@@ -8,10 +8,9 @@ class AuthCodeSerializer(serializers.Serializer):
 
     def validate_auth_code(self, auth_code):
         try:
-            code = AuthCode.objects.get(code=auth_code)
+            return AuthCode.objects.select_related('user').get(code=auth_code)
         except AuthCode.DoesNotExist:
             raise ValidationError('Invalid code')
-        return code.user
 
 class UserAuthentificateSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, max_length=150)
