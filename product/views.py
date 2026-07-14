@@ -47,7 +47,25 @@ class ProductsApiView(APIView):
 class ProductDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    lookup_field = 'id'
+    lookup_field = "id"
+    http_method_names = ["get", "put", "delete"]
+
+    def update(self, request, *args, **kwargs):
+        product = self.get_object()
+
+        serializer = ProductValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        product.title = serializer.validated_data["title"]
+        product.description = serializer.validated_data["description"]
+        product.price = serializer.validated_data["price"]
+        product.category_id = serializer.validated_data["category_id"]
+        product.save()
+
+        return Response(
+            ProductDetailSerializer(product).data,
+            status=status.HTTP_200_OK,
+        )
 
 class CategoriesApiView(APIView):
     def get(self, request):
