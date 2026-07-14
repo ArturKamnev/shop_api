@@ -120,7 +120,24 @@ class ReviewsListApiView(APIView):
 class ReviewDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewDetailSerializer
-    lookup_field = 'id'
+    lookup_field = "id"
+    http_method_names = ["get", "put", "delete"]
+
+    def update(self, request, *args, **kwargs):
+        review = self.get_object()
+
+        serializer = ReviewValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        review.text = serializer.validated_data["text"]
+        review.stars = serializer.validated_data["stars"]
+        review.product_id = serializer.validated_data["product_id"]
+        review.save()
+
+        return Response(
+            ReviewDetailSerializer(review).data,
+            status=status.HTTP_200_OK,
+        )
 
 class ReviewsAndProductsListApiView(APIView):
     def get(self, request):
