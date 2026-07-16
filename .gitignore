@@ -1,1 +1,23 @@
+.env# Environment variables
 .env
+.env.*
+
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local databases
+db.sqlite3
+*.sqlite3
+
+# Editors
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+Thumbs.db
